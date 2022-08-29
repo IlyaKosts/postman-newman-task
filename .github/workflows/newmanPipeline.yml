@@ -20,7 +20,7 @@ jobs:
         run: mkdir -p testResults
       - name: Run POSTMAN collection
         run: |
-          newman run petstore.postman_collection.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
+          newman run petstore.postman_collection.json -r htmlextra --reporter-htmlextra-export testResults/index.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
       - name: Deploy report page
         uses: peaceiris/actions-gh-pages@v3
         with:
