@@ -1,0 +1,809 @@
+{
+	"info": {
+		"_postman_id": "9bbaa71b-22f1-407f-90af-ef63d9c8f5da",
+		"name": "store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "For products",
+			"item": [
+				{
+					"name": "Check the list of products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{storeUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Check the products list with sort key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Successful GET request(status text)\", () => {\r",
+									"  pm.response.to.have.status(\"OK\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{storeUrl}}/products?sortOrder=ASC&sortKey=name",
+							"host": [
+								"{{storeUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "sortOrder",
+									"value": "ASC"
+								},
+								{
+									"key": "sortKey",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create the new product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check POST request(status code)\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([201,202]);\r",
+									"});\r",
+									"pm.test(\"Successful POST request(status text)\", () => {\r",
+									"  pm.response.to.have.status(\"Created\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 300ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(300);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 5,\r\n        \"name\": \"bubble gum\",\r\n        \"price\": 30,\r\n        \"sku\": 999921312423789,\r\n        \"description\": \"SOomething spetial for you.\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{storeUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Check the new product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const Json = pm.response.json();\r",
+									"const schema = {\r",
+									"  \"properties\": {\r",
+									"     \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"number\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  }\r",
+									"};\r",
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test('JSON schema is valid', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"pm.test(\"Check the response elements\", () => {\r",
+									"  pm.expect(Json.name).to.eql(\"bubble gum\");\r",
+									"  pm.expect(Json.price).to.eql(30);\r",
+									"  pm.expect(Json.sku).to.eql(999921312423789);\r",
+									"  pm.expect(Json.description).to.eql(\"SOomething spetial for you.\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{storeUrl}}/products/5"
+					},
+					"response": []
+				},
+				{
+					"name": "Update (edit) the new product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const Json = pm.response.json();\r",
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Successful PUT request(status text: 'OK')\", () => {\r",
+									"  pm.response.to.have.status(\"OK\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Check the edited response elements\", () => {\r",
+									"  pm.expect(Json.sku).to.eql(999921312423908);\r",
+									"  pm.expect(Json.description).to.eql(\"Something spetial for you.\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 5,\r\n        \"name\": \"bubble gum\",\r\n        \"price\": 30,\r\n        \"sku\": 999921312423908,\r\n        \"description\": \"Something spetial for you.\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{storeUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the new product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{storeUrl}}/products/5"
+					},
+					"response": []
+				},
+				{
+					"name": "Trying to find deleted product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the staus code (should be 404)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(404);\r",
+									"});\r",
+									"pm.test(\"Successful DELETE request(status text)\", () => {\r",
+									"  pm.response.to.have.status(\"Not Found\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{storeUrl}}/products/5"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "For orders",
+			"item": [
+				{
+					"name": "Check the list of orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{storeUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Check the orders list with sort key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Successful GET request(status text)\", () => {\r",
+									"  pm.response.to.have.status(\"OK\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{storeUrl}}/orders?sortOrder=ASC&sortKey=sku",
+							"host": [
+								"{{storeUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "sortOrder",
+									"value": "ASC"
+								},
+								{
+									"key": "sortKey",
+									"value": "sku"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create the new order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check POST request(status code)\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([201,202]);\r",
+									"});\r",
+									"pm.test(\"Successful POST request(status text)\", () => {\r",
+									"  pm.response.to.have.status(\"Created\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 300ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(300);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 4,\r\n        \"name\": \"ordeR4\",\r\n        \"sku\": 99992131242890\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{storeUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Check the new order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const Json = pm.response.json();\r",
+									"const schema = {\r",
+									"  \"properties\": {\r",
+									"     \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"number\"\r",
+									"    }\r",
+									"  }\r",
+									"};\r",
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test('JSON schema is valid', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"pm.test(\"Check the response elements\", () => {\r",
+									"  pm.expect(Json.name).to.eql(\"ordeR4\");\r",
+									"  pm.expect(Json.sku).to.eql(99992131242890);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{storeUrl}}/orders/4"
+					},
+					"response": []
+				},
+				{
+					"name": "Update (edit) the new order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const Json = pm.response.json();\r",
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Successful PUT request(status text: 'OK')\", () => {\r",
+									"  pm.response.to.have.status(\"OK\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Check the edited response elements\", () => {\r",
+									"  pm.expect(Json.name).to.eql(\"order4\");\r",
+									"  pm.expect(Json.sku).to.eql(99992131242870);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 4,\r\n        \"name\": \"order4\",\r\n        \"sku\": 99992131242870\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{storeUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the new order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{storeUrl}}/orders/4"
+					},
+					"response": []
+				},
+				{
+					"name": "Trying to find deleted order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the staus code (should be 404)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(404);\r",
+									"});\r",
+									"pm.test(\"Successful DELETE request(status text)\", () => {\r",
+									"  pm.response.to.have.status(\"Not Found\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{storeUrl}}/orders/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "For users",
+			"item": [
+				{
+					"name": "Check the list of users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{storeUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Check the users list with sort key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Successful GET request(status text)\", () => {\r",
+									"  pm.response.to.have.status(\"OK\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{storeUrl}}/users?sortOrder=ASC&sortKey=emailVerified",
+							"host": [
+								"{{storeUrl}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "sortOrder",
+									"value": "ASC"
+								},
+								{
+									"key": "sortKey",
+									"value": "emailVerified"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create the new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check POST request(status code)\", () => {\r",
+									"  pm.expect(pm.response.code).to.be.oneOf([201,202]);\r",
+									"});\r",
+									"pm.test(\"Successful POST request(status text)\", () => {\r",
+									"  pm.response.to.have.status(\"Created\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 300ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(300);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 11,\r\n        \"firstName\": \"asdasd\",\r\n        \"lastName\": \"asd\",\r\n        \"email\": \"bob.mail@gmail.com\",\r\n        \"dateOfBirth\": \"2000-11-23\",\r\n        \"emailVerified\": false,\r\n        \"signUpDate\": \"2022-08-27\",\r\n        \"status\": \"active\",\r\n        \"level\": \"consumer\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{storeUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Check the new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const Json = pm.response.json();\r",
+									"const schema = {\r",
+									"  \"properties\": {\r",
+									"    \"firstName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"email\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"dateOfBirth\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"emailVerified\": {\r",
+									"      \"type\": \"boolean\"\r",
+									"    },\r",
+									"    \"signUpDate\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"     \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"level\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  }\r",
+									"};\r",
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test('JSON schema is valid', function() {\r",
+									"  pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"pm.test(\"Check the response elements\", () => {\r",
+									"  pm.expect(Json.firstName).to.eql(\"asdasd\");\r",
+									"  pm.expect(Json.lastName).to.eql(\"asd\");\r",
+									"  pm.expect(Json.email).to.eql(\"bob.mail@gmail.com\");\r",
+									"  pm.expect(Json.dateOfBirth).to.eql(\"2000-11-23\");\r",
+									"  pm.expect(Json.emailVerified).to.eql(false);\r",
+									"  pm.expect(Json.signUpDate).to.eql(\"2022-08-27\");\r",
+									"  pm.expect(Json.status).to.eql(\"active\");\r",
+									"  pm.expect(Json.level).to.eql(\"consumer\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{storeUrl}}/users/11"
+					},
+					"response": []
+				},
+				{
+					"name": "Update (edit) the new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const Json = pm.response.json();\r",
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Successful PUT request(status text: 'OK')\", () => {\r",
+									"  pm.response.to.have.status(\"OK\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Check the edited response elements\", () => {\r",
+									"  pm.expect(Json.firstName).to.eql(\"bob\");\r",
+									"  pm.expect(Json.lastName).to.eql(\"bobovsky\");\r",
+									"  pm.expect(Json.email).to.eql(\"bob.mail@gmail.com\");\r",
+									"  pm.expect(Json.dateOfBirth).to.eql(\"2000-11-23\");\r",
+									"  pm.expect(Json.emailVerified).to.eql(false);\r",
+									"  pm.expect(Json.signUpDate).to.eql(\"2022-08-27\");\r",
+									"  pm.expect(Json.status).to.eql(\"active\");\r",
+									"  pm.expect(Json.level).to.eql(\"consumer\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 11,\r\n        \"firstName\": \"bob\",\r\n        \"lastName\": \"bobovsky\",\r\n        \"email\": \"bob.mail@gmail.com\",\r\n        \"dateOfBirth\": \"2000-11-23\",\r\n        \"emailVerified\": false,\r\n        \"signUpDate\": \"2022-08-27\",\r\n        \"status\": \"active\",\r\n        \"level\": \"consumer\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{storeUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the staus code (should be 200)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{storeUrl}}/users/11"
+					},
+					"response": []
+				},
+				{
+					"name": "Trying to find deleted user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check the staus code (should be 404)\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(404);\r",
+									"});\r",
+									"pm.test(\"Successful DELETE request(status text)\", () => {\r",
+									"  pm.response.to.have.status(\"Not Found\");\r",
+									"});\r",
+									"pm.test(\"Response time check (should be less than 200ms)\", () => {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{storeUrl}}/users/11"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "storeUrl",
+			"value": "http://localhost:3000"
+		}
+	]
+}
